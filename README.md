@@ -3,6 +3,8 @@
 A small, interactive museum for Clawd, the pixel crab from [claude.dev](https://claude.dev).
 51 works by one small crab. The artist is in residence, takes requests, and accepts payment in pats.
 
+**Visit it: <https://the-clawd-museum.onrender.com>**
+
 ## What's inside
 
 - **The stage.** Clawd performs on request. Type things like "make coffee", "go fishing" or "facepalm", click Clawd for a heart (or many clicks for confetti), and leave Clawd alone long enough for a nap.

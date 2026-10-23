@@ -4,9 +4,9 @@ Guidance for working on The Clawd Museum.
 
 ## What this is
 
-A single-page static site: an interactive museum of Clawd (the claude.dev pixel crab) animations. No framework, no build step, no package manager. Everything the page does lives in `index.html` (inline CSS and JS); `assets/` holds the artwork and claude.dev's own scene code.
+A single-page static site: an interactive museum of Clawd animations. No framework, no build step, no package manager. Everything the page does lives in `index.html` (inline CSS and JS); `assets/` holds the artwork and claude.dev's own scene code.
 
-Run it with `python3 -m http.server 8766` and open http://127.0.0.1:8766/. It must be served over HTTP; `file://` breaks the `fetch` calls. Deployed on Render as a static site via `render.yaml` (publish dir `.`, no build).
+Run it with `python3 -m http.server 8766` and open http://127.0.0.1:8766/. It must be served over HTTP; `file://` breaks the `fetch` calls. Deployed on Render as a static site via `render.yaml` (publish dir `.`, no build) at https://the-clawd-museum.onrender.com; every push to `main` redeploys.
 
 ## Layout
 
