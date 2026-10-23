@@ -448,11 +448,13 @@ const movePath = f => `assets/video/clawd-${f}.json`;
 
 // ---------- red dots ----------
 let seen = new Set();
-try { seen = new Set(JSON.parse(localStorage.getItem("clawd-seen") || "[]")); } catch {}
+// seen pieces last for this tab only: a reload keeps them, a new tab or window starts fresh
+try { seen = new Set(JSON.parse(sessionStorage.getItem("clawd-seen") || "[]")); } catch {}
+try { localStorage.removeItem("clawd-seen"); } catch {} // drop what older versions kept across tabs
 function markSeen(id) {
   if (!seen.has(id)) {
     seen.add(id);
-    try { localStorage.setItem("clawd-seen", JSON.stringify([...seen])); } catch {}
+    try { sessionStorage.setItem("clawd-seen", JSON.stringify([...seen])); } catch {}
   }
   document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.add("seen"));
   updateCount();

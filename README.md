@@ -1,6 +1,6 @@
 # The Clawd Museum
 
-A small, interactive museum for Clawd, the pixel crab from [claude.dev](https://claude.dev).
+A small, interactive museum for Clawd.
 51 works by one small crab. The artist is in residence, takes requests, and accepts payment in pats.
 
 **Visit it: <https://the-clawd-museum.onrender.com>**
@@ -13,7 +13,7 @@ A small, interactive museum for Clawd, the pixel crab from [claude.dev](https://
 - **The playground.** Four rooms drawn in claude.dev's dotted style: Space (an astronaut follows your cursor; click for shooting stars), Pool (click for ripples), Sky (click and the kite drifts there) and Road (five rides, one lap each; click the road to go again).
 - **Walls.** Four wall colours (Salon red, White gallery, Midnight navy, Green) in the top bar, each with a menu of textures: Plain, Clawd wallpaper, Regency stripes, Pixel dots and Linen. Keys 1–4 switch colour.
 
-Your wall, texture, marker and the pieces you've seen are remembered in your browser.
+Your wall, texture and marker are remembered in your browser. The pieces you've seen are remembered only in the current tab, so a new tab starts with everything unseen.
 
 ## Run it locally
 

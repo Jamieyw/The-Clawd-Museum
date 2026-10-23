@@ -28,12 +28,12 @@ assets/favicon.svg, clawd-mark.png
 - **Catalogue arrays** near the top of the script: `ACTS`, `MOVES`, `QUEST` (`[file, title, what Clawd is doing, plaque line, ask-box words]`) and `SPRITES` (`[key, title, plaque line, room]`). `GROUPS` decides which pieces hang in which wall group, in order; `TOTAL` is derived from it. Ids are `act:X`, `move:X`, `quest:X`, `sprite:X`.
 - **Stage**: `perform(path, …)` plays a Lottie file (or `quest:Key` → `performSprite`) and returns to `goIdle()`; after 25s idle Clawd naps. `understand(text)` maps ask-box words to pieces.
 - **Wall**: `piece()` builds a frame + plaque; Lottie pieces load lazily via an IntersectionObserver and rest on their 55% frame. Pixel pieces are positioned with `placeSprite()` so they match the Lottie Clawd's size.
-- **Seen markers**: every piece carries all four markers (`.mk-dot`, `.mk-stamp`, `.mk-paw`, `.mk-star`); `html[data-marker]` picks the visible one. Seen ids are stored in `localStorage["clawd-seen"]`.
+- **Seen markers**: every piece carries all four markers (`.mk-dot`, `.mk-stamp`, `.mk-paw`, `.mk-star`); `html[data-marker]` picks the visible one. Seen ids are stored in `sessionStorage["clawd-seen"]`, so they last for one tab: a reload keeps them, a new tab starts with everything unseen.
 - **Top bar**: `html[data-theme]` = red | white | navy | green, `html[data-texture]` = plain | clawd | stripes | dots | linen. Both are set in an inline `<head>` script before first paint. Texture images are data-URI SVGs in the CSS; dark walls use a white tone, the white gallery a black tone.
 - **Playground**: `openRoom(name, { quiet })` stops the old room's scenes and starts the new one with claude.dev's code (`clawdScenes()`), except the Sky room, which uses the page's own `kiteActor()` so the kite can drift to clicks. Pass `quiet: true` when opening a room the visitor didn't ask for, so it isn't marked seen.
 - **"Back to …"** button: `jumpFrom(piece, target)`; shown bottom-right when the piece is below, top-centre when it's above.
 
-localStorage keys: `clawd-seen`, `clawd-wall`, `clawd-texture`, `clawd-marker`.
+Remembered across tabs in localStorage: `clawd-wall`, `clawd-texture`, `clawd-marker`. Per tab in sessionStorage: `clawd-seen`.
 
 ## Editing the claude.dev code in assets/site/
 
