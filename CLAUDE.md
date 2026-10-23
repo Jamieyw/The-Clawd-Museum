@@ -11,25 +11,27 @@ Run it with `python3 -m http.server 8766` and open http://127.0.0.1:8766/. It mu
 ## Layout
 
 ```
-index.html                 the whole page
-assets/acts/*.json         33 Lottie acts from claude.dev (/shared/video/acts/)
-assets/video/*.json        logo animations: looking, walking, waving
-assets/sprites.json        8 pixel sprites from claude.dev's code (astronaut, pool, kite, walk, skate, scooter, bike, car)
-assets/quest-sprites.json  8 sprites that exist only in Clawd's Quest (claude.dev/game)
-assets/lottie_canvas.min.js  Lottie player (claude.dev's vendored copy)
-assets/site/loader.js      tiny stand-in for the Turbopack runtime so claude.dev's modules can run here
-assets/site/dots.js        claude.dev chunk: module 82742 (clawdActor, poolWater, dotSky, rideScene, …), patched
-assets/site/space.js       claude.dev chunk: modules 98092 (spaceField) and 39149 (clawdNavMark), paths patched
-assets/favicon.svg, clawd-mark.png
+index.html                          the whole page
+assets/animations/acts/*.json       33 Lottie acts from claude.dev (/shared/video/acts/)
+assets/animations/logo/*.json       the logo's Lottie animations: looking, walking, waving
+assets/sprites/claude-dev.json      8 pixel sprites from claude.dev's code (astronaut, pool, kite, walk, skate, scooter, bike, car)
+assets/sprites/clawds-quest.json    8 sprites that exist only in Clawd's Quest (claude.dev/game)
+assets/code/lottie_canvas.min.js    Lottie player (claude.dev's vendored copy)
+assets/code/claude-dev/loader.js    tiny stand-in for the Turbopack runtime so claude.dev's modules can run here
+assets/code/claude-dev/dots.js      claude.dev chunk: module 82742 (clawdActor, poolWater, dotSky, rideScene, …), patched
+assets/code/claude-dev/space.js     claude.dev chunk: modules 98092 (spaceField) and 39149 (clawdNavMark), paths patched
+assets/images/                      favicon.svg (tab icon), clawd-mark.png (plain logo)
 ```
+
+"Lottie" files describe shapes the browser draws; "sprites" are frame-by-frame grids of pixels. Both look like pixel art on the page.
 
 ## Where the Clawds come from
 
-All artwork was collected from **https://claude.dev/** and **https://claude.dev/game/** (Clawd's Quest). Both sites change over time, so new Clawd animations may appear; when asked to "check for new Clawds", look in these places and compare against what's already in `assets/`:
+All artwork was collected from **https://claude.dev/** and **https://claude.dev/game/** (Clawd's Quest). Both sites change over time, so new Clawd animations may appear; when asked to "check for new Clawds", look in these places and compare against what's already in `assets/animations/` and `assets/sprites/`:
 
 - **Lottie acts**: claude.dev's JS chunks (the `<script src="/_next/static/chunks/…">` files, plus chunks they reference) list `Clawd-*.json` names served from `https://claude.dev/shared/video/acts/`. Logo animations live at `/shared/video/clawd-*.json`.
-- **Pixel sprites in the site code**: a chunk exporting `CLAWD`, `CLAWD_KITE`, `CLAWD_POOL`, `RIDE_SPRITES` holds them as `{w, h, fps, palette, base, deltas}` objects; extract the literals into `assets/sprites.json`.
-- **Clawd's Quest**: `https://claude.dev/game/game.js` has a `Ja={Name:{cat,w,h,fps,palette,base,deltas,a0,standMatch},…}` object with the game's sprites; new ones go in `assets/quest-sprites.json`.
+- **Pixel sprites in the site code**: a chunk exporting `CLAWD`, `CLAWD_KITE`, `CLAWD_POOL`, `RIDE_SPRITES` holds them as `{w, h, fps, palette, base, deltas}` objects; extract the literals into `assets/sprites/claude-dev.json`.
+- **Clawd's Quest**: `https://claude.dev/game/game.js` has a `Ja={Name:{cat,w,h,fps,palette,base,deltas,a0,standMatch},…}` object with the game's sprites; new ones go in `assets/sprites/clawds-quest.json`.
 
 Sprite frames decode as: `base` is one character per pixel (`.` = transparent, otherwise a base-36 palette index), and each entry in `deltas` is a comma list of `<pixel index in base 36><new value>` changes from the previous frame.
 
@@ -47,13 +49,13 @@ Before adding anything, check it isn't a copy: several sources draw the same ani
 
 Remembered across tabs in localStorage: `clawd-wall`, `clawd-texture`, `clawd-marker`. Per tab in sessionStorage: `clawd-seen`.
 
-## Editing the claude.dev code in assets/site/
+## Editing the claude.dev code in assets/code/claude-dev/
 
 These files are minified third-party code. Keep edits minimal, make them with exact string replacements, and record each one in the comment at the top of `loader.js`. Current patches:
 - `dots.js` `rideScene`: `startX`, `screenSpeed`, `stopAfterLap` options, an `again()` method, and a pixel-tight halo instead of the wide oval around the rider. Minified variable names get reused inside blocks (`e` is shadowed), so copy options into new outer variables first.
-- `space.js`: claude.dev `/shared/...` paths pointed at `assets/`.
+- `space.js`: claude.dev `/shared/...` paths pointed at this repo's `assets/` folders. If assets move, update these paths too: the top-bar logo loads its own animations.
 
-After changing anything in `assets/site/`, bump the `?v=N` on its `<script>` tags in `index.html` so browsers don't keep the old copy.
+After changing anything in `assets/code/claude-dev/`, bump the `?v=N` on its `<script>` tags in `index.html` so browsers don't keep the old copy.
 
 ## Conventions
 

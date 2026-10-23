@@ -24,6 +24,35 @@ Every Clawd in the museum was collected from two places:
 
 Both sites get updated from time to time. When they add new Clawd animations, those can be collected and hung in the museum too.
 
+## Animations and sprites
+
+The museum has two kinds of Clawd animation. They look the same on the page, but they're stored differently:
+
+| | **Sprites** (`assets/sprites/`) | **Lottie animations** (`assets/animations/`) |
+|---|---|---|
+| What's stored | A grid of coloured squares for every frame: "this pixel is orange, this one is black…" | Instructions for drawing shapes: "a rectangle here, moving this way" |
+| Like | A flipbook of tiny pixel drawings | A recipe the browser follows to draw each frame |
+| Examples | The astronaut, pool float, kite, rides, and the 8 Clawd's Quest moves | Fishing, coffee, rainbow and the other acts, plus the logo's waving |
+| Where they came from | Hidden inside claude.dev's code and the game's code | Separate animation files on claude.dev |
+
+"Sprite" is a video-game word for a small character picture that moves around the screen; animated sprites work like a flipbook, showing slightly different frames one after another.
+
+## What's in `assets/`
+
+```
+assets/
+  animations/
+    acts/            33 Lottie animations (the main collection)
+    logo/            the logo's waving, looking and walking
+  sprites/
+    claude-dev.json  pixel sprites from claude.dev: astronaut, pool float, kite, rides
+    clawds-quest.json  the 8 moves only found in Clawd's Quest
+  code/
+    lottie_canvas.min.js  the Lottie animation player
+    claude-dev/      claude.dev's playground and logo code, plus a small loader
+  images/            the browser-tab icon and the plain Clawd logo
+```
+
 ## Run it locally
 
 It's a static site with no build step, but it has to be served over HTTP (the animations are loaded with `fetch`, which browsers block on `file://`):

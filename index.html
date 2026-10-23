@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Clawd Museum</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Pixelify+Sans:wght@400;600&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -290,7 +290,7 @@
 <body>
 
 <nav class="topnav" aria-label="Wall colour">
-  <a class="nav-brand" href="#" aria-label="Back to the top"><img class="clawd-mark" src="assets/clawd-mark.png" alt=""></a>
+  <a class="nav-brand" href="#" aria-label="Back to the top"><img class="clawd-mark" src="assets/images/clawd-mark.png" alt=""></a>
   <div class="nav-links" role="tablist">
     <div class="nav-item"><button class="tab" role="tab" data-wall="red" data-short="RED" aria-haspopup="menu"><span class="k">[1]</span><span class="w">SALON RED</span></button><div class="tex-menu" role="menu"></div></div>
     <div class="nav-item"><button class="tab" role="tab" data-wall="white" data-short="WHITE" aria-haspopup="menu"><span class="k">[2]</span><span class="w">WHITE GALLERY</span></button><div class="tex-menu" role="menu"></div></div>
@@ -342,10 +342,10 @@
 
 <button id="backTo" type="button" aria-hidden="true" tabindex="-1"><span class="arw" aria-hidden="true"></span><span></span></button>
 
-<script src="assets/lottie_canvas.min.js"></script>
-<script src="assets/site/loader.js?v=8"></script>
-<script src="assets/site/dots.js?v=8"></script>
-<script src="assets/site/space.js?v=8"></script>
+<script src="assets/code/lottie_canvas.min.js"></script>
+<script src="assets/code/claude-dev/loader.js?v=9"></script>
+<script src="assets/code/claude-dev/dots.js?v=9"></script>
+<script src="assets/code/claude-dev/space.js?v=9"></script>
 <script>
 // ---------- catalogue ----------
 // [file, title, what he's doing (for the stage), plaque line, words that ask for it]
@@ -443,8 +443,8 @@ const GROUPS = [
 const TOTAL = GROUPS.reduce((n, g) => n + g[2].length, 0);
 const $ = s => document.querySelector(s);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const actPath = f => `assets/acts/Clawd-${f}.json`;
-const movePath = f => `assets/video/clawd-${f}.json`;
+const actPath = f => `assets/animations/acts/Clawd-${f}.json`;
+const movePath = f => `assets/animations/logo/clawd-${f}.json`;
 
 // ---------- red dots ----------
 let seen = new Set();
@@ -832,7 +832,7 @@ function pixelCanvas(canvas, sprite, scale) {
 }
 
 let SP = null;
-fetch("assets/sprites.json").then(r => r.json()).then(data => {
+fetch("assets/sprites/claude-dev.json").then(r => r.json()).then(data => {
   SP = {};
   for (const [k, s] of Object.entries(data)) SP[k] = { ...s, frames: decode(s) };
   for (const [{ sprite: k, room }, b] of spritePieces) {
@@ -854,7 +854,7 @@ fetch("assets/sprites.json").then(r => r.json()).then(data => {
   setupRooms();
 });
 
-fetch("assets/quest-sprites.json").then(r => r.json()).then(data => {
+fetch("assets/sprites/clawds-quest.json").then(r => r.json()).then(data => {
   QS = {};
   for (const [k, s] of Object.entries(data)) QS[k] = { ...s, frames: decode(s) };
   for (const [{ quest: k, doing }, b] of questPieces) {
@@ -873,7 +873,7 @@ fetch("assets/quest-sprites.json").then(r => r.json()).then(data => {
   }
 });
 
-// ---------- playground (claude.dev's own scene code, via assets/site/loader.js) ----------
+// ---------- playground (claude.dev's own scene code, via assets/code/claude-dev/loader.js) ----------
 const ROOMS = ["space", "pool", "sky", "road"];
 const RIDES = ["walk", "skate", "bike", "scooter", "car"];
 // on-screen speed for each ride, in px per second
