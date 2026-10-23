@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Clawd Museum</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Pixelify+Sans:wght@400;600&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  try {
+    document.documentElement.dataset.theme = localStorage.getItem("clawd-wall") || "red";
+    document.documentElement.dataset.marker = localStorage.getItem("clawd-marker") || "stamp";
+    document.documentElement.dataset.texture = localStorage.getItem("clawd-texture") || "plain";
+  } catch { Object.assign(document.documentElement.dataset, { theme: "red", marker: "stamp", texture: "plain" }); }
+</script>
+<style>
+  /* read by claude.dev's scene code for its dots and shooting stars */
+  :root { --space-dot: #a8a69d; --space-shot: #d2cdbf; }
+  :root {
+    --wall: #1e3a34;
+    --wall-deep: #142924;
+    --gilt: #c8a45a;
+    --gilt-dark: #8a6d33;
+    --mat: #f1ebdd;
+    --plaque-ink: #2a2722;
+    --on-wall: #ebe5d5;
+    --on-wall-muted: #a3b5ab;
+    --sticker: #d2342c;
+    --stamp: #b3261e;
+    --pixel: "Pixelify Sans", ui-monospace, monospace;
+    --serif: "Newsreader", Georgia, serif;
+  }
+  /* wall colours, switched from the tabs in the top bar */
+  html[data-theme="red"] { --wall: #5a1f24; --wall-deep: #3f1418; --on-wall: #f0e4d6; --on-wall-muted: #c9a59c; }
+  html[data-theme="navy"] { --wall: #1b2540; --wall-deep: #121a30; --on-wall: #e6e4dc; --on-wall-muted: #9aa6c0; }
+  html[data-theme="white"] { --wall: #f3f1ec; --wall-deep: #e8e4da; --on-wall: #2a2722; --on-wall-muted: #6b665c; }
+  html[data-theme="white"] :is(.stage-room h1, #status, .wing-head h2, #ask input) { color: var(--plaque-ink); }
+  html[data-theme="white"] .stage-room { background: radial-gradient(ellipse 46% 62% at 50% 34%, rgb(255 255 255 / .9), transparent 70%), var(--wall-deep); }
+  html[data-theme="white"] #ask { background: rgb(255 255 255 / .6); }
+  html[data-theme="white"] .suggest button { border-color: rgb(0 0 0 / .2); }
+  html[data-theme="white"] #ask button { color: var(--plaque-ink); }
+
+  /* wall textures, chosen from the dropdown under each colour tab */
+  html:not([data-theme="white"])[data-texture="clawd"] body { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2272%22%20height%3D%2272%22%20shape-rendering%3D%22crispEdges%22%3E%3Cg%20fill%3D%22rgba%28255%2C255%2C255%2C0.05%29%22%3E%3Crect%20x%3D%2212%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%228%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2228%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2230%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%228%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2228%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2230%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2244%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2246%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2264%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2266%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2244%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2246%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2264%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2266%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3C/g%3E%3C/svg%3E"); }
+  html[data-theme="white"][data-texture="clawd"] body { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2272%22%20height%3D%2272%22%20shape-rendering%3D%22crispEdges%22%3E%3Cg%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22%3E%3Crect%20x%3D%2212%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2210%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2212%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%228%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2228%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2230%22%20y%3D%2214%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%228%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2228%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2230%22%20y%3D%2216%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2218%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2218%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2216%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2226%22%20y%3D%2220%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2246%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2248%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2244%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2246%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2264%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2266%22%20y%3D%2250%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2244%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2246%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2264%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2266%22%20y%3D%2252%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2250%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2256%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2260%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2254%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2252%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2258%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3Crect%20x%3D%2262%22%20y%3D%2256%22%20width%3D%222%22%20height%3D%222%22/%3E%3C/g%3E%3C/svg%3E"); }
+  html:not([data-theme="white"])[data-texture="stripes"] body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 26px, transparent 26px 52px), repeating-linear-gradient(90deg, transparent 0 25px, rgba(255,255,255,.05) 25px 26px, transparent 26px 52px); }
+  html[data-theme="white"][data-texture="stripes"] body { background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.04) 0 26px, transparent 26px 52px), repeating-linear-gradient(90deg, transparent 0 25px, rgba(0,0,0,.05) 25px 26px, transparent 26px 52px); }
+  html:not([data-theme="white"])[data-texture="dots"] body { background-image: radial-gradient(rgba(255,255,255,.07) 1.2px, transparent 1.5px); background-size: 12px 12px; }
+  html[data-theme="white"][data-texture="dots"] body { background-image: radial-gradient(rgba(0,0,0,.09) 1.2px, transparent 1.5px); background-size: 12px 12px; }
+  html:not([data-theme="white"])[data-texture="linen"] body { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.9%20.35%22%20numOctaves%3D%222%22%20stitchTiles%3D%22stitch%22/%3E%3CfeColorMatrix%20values%3D%220%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200.16%200%22/%3E%3C/filter%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20filter%3D%22url%28%23n%29%22/%3E%3C/svg%3E"); }
+  html[data-theme="white"][data-texture="linen"] body { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.9%20.35%22%20numOctaves%3D%222%22%20stitchTiles%3D%22stitch%22/%3E%3CfeColorMatrix%20values%3D%220%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200.12%200%22/%3E%3C/filter%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20filter%3D%22url%28%23n%29%22/%3E%3C/svg%3E"); }
+
+  /* the textures again on the menu swatches, drawn stronger and smaller so they read at this size */
+  .sw[data-theme="red"] { background-color: #5a1f24; } .sw[data-theme="white"] { background-color: #f3f1ec; }
+  .sw[data-theme="navy"] { background-color: #1b2540; } .sw[data-theme="green"] { background-color: #1e3a34; }
+  .sw:not([data-theme="white"])[data-texture="clawd"] { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2214%22%20height%3D%2210%22%20shape-rendering%3D%22crispEdges%22%3E%3Cg%20fill%3D%22rgba%28255%2C255%2C255%2C0.32%29%22%3E%3Crect%20x%3D%223%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%221%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%222%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2211%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2212%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%221%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2211%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2212%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3C/g%3E%3C/svg%3E"); background-size: 14px 10px; }
+  .sw:not([data-theme="white"])[data-texture="stripes"] { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 3px, transparent 3px 6px); }
+  .sw:not([data-theme="white"])[data-texture="dots"] { background-image: radial-gradient(rgba(255,255,255,.45) .8px, transparent 1px); background-size: 4px 4px; }
+  .sw:not([data-theme="white"])[data-texture="linen"] { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.9%20.35%22%20numOctaves%3D%222%22%20stitchTiles%3D%22stitch%22/%3E%3CfeColorMatrix%20values%3D%220%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200.9%200%22/%3E%3C/filter%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20filter%3D%22url%28%23n%29%22/%3E%3C/svg%3E"); }
+  .sw[data-theme="white"][data-texture="clawd"] { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2214%22%20height%3D%2210%22%20shape-rendering%3D%22crispEdges%22%3E%3Cg%20fill%3D%22rgba%280%2C0%2C0%2C0.32%29%22%3E%3Crect%20x%3D%223%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%221%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%222%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2211%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2212%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%221%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2211%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2212%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%224%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%227%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%223%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%225%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%228%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3Crect%20x%3D%2210%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22/%3E%3C/g%3E%3C/svg%3E"); background-size: 14px 10px; }
+  .sw[data-theme="white"][data-texture="stripes"] { background-image: repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 3px, transparent 3px 6px); }
+  .sw[data-theme="white"][data-texture="dots"] { background-image: radial-gradient(rgba(0,0,0,.45) .8px, transparent 1px); background-size: 4px 4px; }
+  .sw[data-theme="white"][data-texture="linen"] { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.9%20.35%22%20numOctaves%3D%222%22%20stitchTiles%3D%22stitch%22/%3E%3CfeColorMatrix%20values%3D%220%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200%20.5%20%200%200%200%200.9%200%22/%3E%3C/filter%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20filter%3D%22url%28%23n%29%22/%3E%3C/svg%3E"); }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--wall); color: var(--on-wall);
+    font: 17px/1.6 var(--serif);
+  }
+  :focus-visible { outline: 2px solid var(--gilt); outline-offset: 3px; }
+  button { font: inherit; color: inherit; }
+
+  /* ---------- top bar, after claude.dev's keyboard nav ---------- */
+  .topnav {
+    position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 24px;
+    padding: 12px 24px; background: color-mix(in srgb, var(--wall-deep) 86%, transparent);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .nav-brand { display: flex; align-items: center; margin-right: auto; }
+  .nav-brand img { display: block; width: 59px; height: 45px; }
+  .nav-links { display: flex; gap: 34px; font: 400 12px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .02em; }
+  .nav-item { position: relative; }
+  .nav-links .tab { background: none; border: 0; padding: 6px 0; cursor: pointer; color: var(--on-wall-muted); white-space: nowrap; font: inherit; letter-spacing: inherit; }
+  .nav-links .k { opacity: .6; margin-right: 6px; }
+  .nav-links .tab:hover, .nav-links .tab[aria-selected="true"] { color: var(--on-wall); }
+  .nav-links .tab[aria-selected="true"] .k, .nav-links .tab:hover .k { opacity: .85; }
+  .tex-menu {
+    position: absolute; top: calc(100% + 8px); left: -12px; min-width: 190px; padding: 6px; z-index: 5;
+    display: flex; flex-direction: column; gap: 2px;
+    background: color-mix(in srgb, var(--wall-deep) 94%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid color-mix(in srgb, var(--on-wall) 16%, transparent); border-radius: 6px; box-shadow: 0 10px 24px -8px rgb(0 0 0 / .55);
+    opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .15s, transform .15s, visibility 0s .15s;
+  }
+  .tex-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; } /* keeps hover alive across the gap */
+  .nav-item:last-child .tex-menu { left: auto; right: -12px; } /* only the right-most menu would run off the screen */
+  .nav-item:hover .tex-menu, .nav-item:focus-within .tex-menu, .nav-item.open .tex-menu { opacity: 1; visibility: visible; transform: none; transition: opacity .15s, transform .15s; }
+  /* after a pick, stay closed until the pointer leaves the tab */
+  .nav-item.hush .tex-menu { opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .15s, transform .15s, visibility 0s .15s; }
+  .tex-menu button {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 10px; border: 0; border-radius: 4px; cursor: pointer; text-align: left;
+    background: none; color: var(--on-wall-muted); font: inherit; letter-spacing: inherit; white-space: nowrap;
+  }
+  .tex-menu button:hover { background: color-mix(in srgb, var(--on-wall) 8%, transparent); color: var(--on-wall); }
+  .tex-menu button[aria-checked="true"] { color: var(--on-wall); }
+  .tex-menu .sw { width: 22px; height: 16px; border-radius: 3px; flex: none; border: 1px solid color-mix(in srgb, var(--on-wall) 22%, transparent); }
+  .tex-menu .tick { margin-left: auto; opacity: 0; }
+  .tex-menu button[aria-checked="true"] .tick { opacity: 1; }
+  .nav-item:not(:has(.tab[aria-selected="true"])) .tex-menu .tick { opacity: 0; } /* tick only under the colour in use */
+  @media (max-width: 720px) {
+    .topnav { gap: 12px; padding: 10px 16px; }
+    .nav-links { gap: 16px; }
+    .nav-links .w { display: none; }
+    .nav-links .tab::after { content: attr(data-short); }
+    .tex-menu { min-width: min(190px, calc(100vw - 32px)); }
+    .nav-item:nth-child(2) .tex-menu { left: -60px; }
+    .nav-item:nth-child(3) .tex-menu { left: auto; right: -12px; }
+  }
+  .stage-room, #playground { scroll-margin-top: 72px; }
+
+  /* "Back to …": floats at the bottom after a piece sends you to the stage or playground */
+  #backTo {
+    position: fixed; right: 22px; bottom: 22px; z-index: 60; transform: translateY(16px);
+    display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);
+    padding: 9px 16px 9px 12px; border: 0; border-radius: 999px; cursor: pointer;
+    background: linear-gradient(135deg, #e0c27e, var(--gilt) 45%, var(--gilt-dark)); color: var(--plaque-ink);
+    font: 600 15px var(--pixel); box-shadow: 0 8px 20px -6px rgb(0 0 0 / .6);
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1);
+  }
+  #backTo.show { opacity: 1; pointer-events: auto; transform: none; }
+  /* when the piece is above you (coming back from the playground), sit centred under the top bar and point up */
+  #backTo.up { top: 78px; bottom: auto; right: auto; left: 50%; transform: translate(-50%, -16px); }
+  #backTo.up.show { transform: translate(-50%, 0); }
+  #backTo.up .arw { border-top: 0; border-bottom: 7px solid currentColor; }
+  #backTo:hover { filter: brightness(1.06); }
+  #backTo .arw { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid currentColor; }
+  #backTo span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ---------- the stage ---------- */
+  .stage-room {
+    background:
+      radial-gradient(ellipse 46% 62% at 50% 34%, rgb(255 236 190 / .17), transparent 70%),
+      var(--wall-deep);
+    padding: 28px 16px 36px;
+    border-bottom: 6px solid var(--gilt-dark);
+  }
+  .stage-room h1 {
+    font: 600 clamp(30px, 5vw, 48px)/1.05 var(--pixel);
+    margin: 0; text-align: center; color: var(--mat); letter-spacing: .01em;
+  }
+  .stage-room .intro { text-align: center; color: var(--on-wall-muted); margin: 6px auto 0; }
+  #stage {
+    position: relative; width: min(560px, 100%, calc((100svh - 300px) * 1.486)); min-width: min(300px, 100%); aspect-ratio: 2750 / 1850; margin: 0 auto;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  #stage .layer { position: absolute; inset: 0; }
+  #stage::after { /* pedestal */
+    content: ""; position: absolute; left: 31%; right: 31%; bottom: 13%; height: 4.5%;
+    background: rgb(0 0 0 / .28); border-radius: 50%; filter: blur(5px); z-index: -1;
+  }
+  #status {
+    font: 400 20px/1.3 var(--pixel); text-align: center; color: var(--mat);
+    min-height: 1.3em; margin: 0 0 14px;
+  }
+  form#ask {
+    display: flex; gap: 8px; width: min(520px, 100%); margin: 0 auto;
+    background: rgb(0 0 0 / .25); border: 1px solid rgb(200 164 90 / .45); border-radius: 6px; padding: 6px;
+  }
+  #ask input {
+    flex: 1; min-width: 0; background: transparent; border: 0; color: var(--mat);
+    font: 400 18px var(--pixel); padding: 6px 8px;
+  }
+  #ask input::placeholder { color: var(--on-wall-muted); }
+  #ask input:focus { outline: none; }
+  #ask button {
+    background: var(--gilt); color: var(--wall-deep); border: 0; border-radius: 4px;
+    font: 600 16px var(--pixel); padding: 6px 14px; cursor: pointer;
+  }
+  .suggest { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px auto 0; max-width: 560px; }
+  .suggest button {
+    background: none; border: 1px solid rgb(235 229 213 / .25); border-radius: 999px;
+    color: var(--on-wall); font: 400 14px var(--pixel); padding: 3px 11px; cursor: pointer;
+  }
+  .suggest button:hover { border-color: var(--gilt); color: var(--gilt); }
+
+  /* ---------- the wall ---------- */
+  main { max-width: 1180px; margin: 0 auto; padding: 0 16px 64px; overflow-x: clip; } /* corner stamps may poke past the edge */
+  .wing-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin: 48px 0 6px; }
+  .wing-head h2 { font: 600 26px/1.2 var(--pixel); margin: 0; color: var(--mat); }
+  .wing-head p { margin: 0; color: var(--on-wall-muted); font-size: 15px; }
+  .wing-note { color: var(--on-wall-muted); font-size: 15px; margin: 0 0 22px; max-width: 40em; }
+  #seenCount { display: inline-flex; align-items: center; gap: 8px; }
+  .head-right { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+
+  /* how seen pieces are marked: a brass-framed set of four plaque buttons */
+  .marker-pick { display: inline-flex; align-items: center; gap: 10px; }
+  .marker-pick .lbl { font: 400 13px var(--pixel); color: var(--on-wall-muted); }
+  .marker-pick .opts {
+    display: inline-flex; padding: 3px; gap: 3px; border-radius: 6px;
+    background: linear-gradient(135deg, #e0c27e, var(--gilt) 40%, var(--gilt-dark));
+    box-shadow: 0 4px 10px -4px rgb(0 0 0 / .6);
+  }
+  .marker-pick button {
+    display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px;
+    border: 0; border-radius: 4px; cursor: pointer; background: var(--mat); color: var(--plaque-ink);
+    font: 400 13px var(--pixel); transition: background .15s;
+  }
+  .marker-pick button:hover { background: #fff8ea; }
+  .marker-pick button[aria-checked="true"] { background: var(--plaque-ink); color: var(--mat); }
+  .marker-pick button:active { transform: translateY(1px); }
+  .marker-pick img, .count-ic img { width: 14px; image-rendering: pixelated; display: block; }
+  .ic-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sticker); display: inline-block; }
+  .ic-stamp { font: 700 8px/12px "Silkscreen", monospace; color: var(--stamp); border: 1.5px solid var(--stamp); border-radius: 2px; padding: 0 3px; transform: rotate(8deg); background: var(--mat); }
+  .count-ic { display: inline-flex; align-items: center; }
+  @media (max-width: 560px) { .marker-pick .txt { display: none; } .marker-pick button { padding: 0 9px; } }
+
+  .hang { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 34px 26px; }
+  @media (max-width: 520px) { .hang { grid-template-columns: repeat(2, 1fr); gap: 24px 14px; } .plaque { font-size: 12.5px; } }
+  .piece { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; display: flex; flex-direction: column; align-self: start; }
+  .frame {
+    position: relative; padding: 7px;
+    background: linear-gradient(135deg, #e0c27e, var(--gilt) 40%, var(--gilt-dark));
+    box-shadow: 0 10px 18px -8px rgb(0 0 0 / .55);
+  }
+  .mat { background: var(--mat); padding: 8%; }
+  .art { aspect-ratio: 2750 / 1850; display: grid; place-items: center; overflow: hidden; }
+  .art canvas { max-width: 100%; max-height: 100%; }
+  .art canvas.px { image-rendering: pixelated; }
+  /* every piece carries all four markers; html[data-marker] picks the one that shows */
+  .mat { position: relative; }
+  .mk { position: absolute; pointer-events: none; opacity: 0; transition: opacity .2s, transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+  .mk-dot { right: -5px; bottom: -5px; width: 11px; height: 11px; border-radius: 50%; background: var(--sticker); box-shadow: inset -1px -1px 0 rgb(0 0 0 / .25); transform: scale(.4); }
+  .mk-stamp {
+    right: -8px; top: -11px; z-index: 2; white-space: nowrap;
+    font: 700 12px/1 "Silkscreen", monospace; letter-spacing: .06em; color: var(--stamp);
+    background: var(--mat); border: 2px solid var(--stamp); border-radius: 3px; padding: 4px 6px 3px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / .35); transform: rotate(10deg) scale(1.9);
+  }
+  .mk-paw { left: 8px; top: 8px; width: 24px; image-rendering: pixelated; transform: scale(.4); }
+  .mk-star { left: -9px; top: -9px; width: 24px; image-rendering: pixelated; filter: drop-shadow(0 2px 1px rgb(0 0 0 / .4)); transform: scale(.4); }
+  html[data-marker="dot"] .piece.seen .mk-dot { opacity: 1; transform: none; }
+  html[data-marker="stamp"] .piece.seen .mk-stamp { opacity: 1; transform: rotate(10deg); }
+  html[data-marker="paw"] .piece.seen .mk-paw { opacity: .9; transform: rotate(-14deg); }
+  html[data-marker="star"] .piece.seen .mk-star { opacity: 1; transform: none; animation: twinkle 2.4s ease-in-out .4s infinite; }
+  @keyframes twinkle { 50% { transform: scale(1.12) rotate(8deg); } }
+  @media (prefers-reduced-motion: reduce) { html[data-marker="star"] .piece.seen .mk-star { animation: none; } }
+  .plaque {
+    margin: 12px 4px 0; background: var(--mat); color: var(--plaque-ink);
+    padding: 7px 10px 8px; font-size: 13.5px; line-height: 1.35;
+    box-shadow: 0 3px 6px -3px rgb(0 0 0 / .5);
+  }
+  .plaque b { display: block; font-weight: 600; font-size: 15px; }
+  .plaque i { color: #6b665c; }
+  .piece:hover .frame, .piece:focus-visible .frame { box-shadow: 0 0 0 3px rgb(255 236 190 / .35), 0 10px 18px -8px rgb(0 0 0 / .55); }
+
+  /* ---------- playground ---------- */
+  /* room tabs and ride buttons: cream plaques in a gilt frame, like the marker selector */
+  .rooms-tabs, .rides {
+    display: inline-flex; flex-wrap: wrap; padding: 3px; gap: 3px; border-radius: 6px;
+    background: linear-gradient(135deg, #e0c27e, var(--gilt) 40%, var(--gilt-dark));
+    box-shadow: 0 4px 10px -4px rgb(0 0 0 / .6);
+  }
+  .rooms-tabs { margin-bottom: 14px; }
+  .rooms-tabs button, .rides button {
+    display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 4px; cursor: pointer;
+    background: var(--mat); color: var(--plaque-ink); font: 400 15px var(--pixel); padding: 6px 14px;
+    transition: background .15s;
+  }
+  .rides button { font-size: 13px; padding: 4px 10px; }
+  .rooms-tabs button:hover, .rides button:hover { background: #fff8ea; }
+  .rooms-tabs button[aria-selected="true"], .rides button[aria-pressed="true"] { background: var(--plaque-ink); color: var(--mat); }
+  .rooms-tabs button:active, .rides button:active { transform: translateY(1px); }
+  .rooms-tabs img { height: 16px; image-rendering: pixelated; display: block; }
+  .room {
+    position: relative; height: 340px; overflow: hidden; border: 7px solid var(--gilt-dark);
+    background: #faf9f5; touch-action: none; user-select: none;
+  }
+  .room[hidden] { display: none; }
+  .room .scene, .room .actor-box { position: absolute; inset: 0; }
+  .room .hint { position: absolute; left: 12px; bottom: 10px; font: 400 14px var(--pixel); color: #87867f; background: #faf9f5; padding: 0 4px; pointer-events: none; }
+  #space, #pool { cursor: crosshair; } /* replaced by pixel cursors once the page script runs */
+  #sky, #road { cursor: pointer; }
+  .rides { position: absolute; left: 12px; top: 12px; z-index: 1; }
+
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Wall colour">
+  <a class="nav-brand" href="#" aria-label="Back to the top"><img class="clawd-mark" src="assets/clawd-mark.png" alt=""></a>
+  <div class="nav-links" role="tablist">
+    <div class="nav-item"><button class="tab" role="tab" data-wall="red" data-short="RED" aria-haspopup="menu"><span class="k">[1]</span><span class="w">SALON RED</span></button><div class="tex-menu" role="menu"></div></div>
+    <div class="nav-item"><button class="tab" role="tab" data-wall="white" data-short="WHITE" aria-haspopup="menu"><span class="k">[2]</span><span class="w">WHITE GALLERY</span></button><div class="tex-menu" role="menu"></div></div>
+    <div class="nav-item"><button class="tab" role="tab" data-wall="navy" data-short="NAVY" aria-haspopup="menu"><span class="k">[3]</span><span class="w">MIDNIGHT NAVY</span></button><div class="tex-menu" role="menu"></div></div>
+    <div class="nav-item"><button class="tab" role="tab" data-wall="green" data-short="GREEN" aria-haspopup="menu"><span class="k">[4]</span><span class="w">GREEN</span></button><div class="tex-menu" role="menu"></div></div>
+  </div>
+</nav>
+
+<section class="stage-room" aria-label="Clawd on stage">
+  <h1>The Clawd Museum</h1>
+  <p class="intro">51 works by one small crab. The artist is in residence, takes requests, and accepts payment in pats.</p>
+  <div id="stage" role="button" tabindex="0" aria-label="Pat Clawd"></div>
+  <p id="status" aria-live="polite">Clawd is looking around.</p>
+  <form id="ask" autocomplete="off">
+    <input id="askInput" aria-label="Ask Clawd to do something" placeholder="Ask Clawd to…">
+    <button type="submit">Ask</button>
+  </form>
+  <div class="suggest" id="suggest"></div>
+</section>
+
+<main>
+  <div class="wing-head">
+    <h2>The collection</h2>
+    <div class="head-right">
+      <div class="marker-pick" role="radiogroup" aria-label="How seen pieces are marked">
+        <span class="lbl">Mark seen with</span>
+        <span class="opts" id="markerOpts"></span>
+      </div>
+      <p id="seenCount"><span class="count-ic" aria-hidden="true"></span><span id="seenText">0 of 51 seen</span></p>
+    </div>
+  </div>
+  <p class="wing-note">Hover to peek. Click it and Clawd performs it live on stage, no rehearsal. Rides, the kite, the pool float and the astronaut are too big for the stage, so they open in the playground. <span id="markerWord">A COLLECTED stamp</span> means you've seen it.</p>
+  <div id="collection"></div>
+
+  <div class="wing-head" id="playground"><h2>The playground</h2></div>
+  <p class="wing-note">Four rooms where Clawd skips work.<br>Please do not tap the glass. There is no glass.</p>
+  <div class="rooms-tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-room="space">Space</button>
+    <button role="tab" aria-selected="false" data-room="pool">Pool</button>
+    <button role="tab" aria-selected="false" data-room="sky">Sky</button>
+    <button role="tab" aria-selected="false" data-room="road">Road</button>
+  </div>
+  <div class="room" id="space"><div class="scene"></div><div class="actor-box"></div><span class="hint">Move around and Clawd floats after you. Click for shooting stars.</span></div>
+  <div class="room" id="pool" hidden><div class="scene"></div><div class="actor-box"></div><span class="hint">Click the water to make ripples.</span></div>
+  <div class="room" id="sky" hidden><div class="scene"></div><div class="actor-box"></div><span class="hint">Click the sky and the kite drifts there.</span></div>
+  <div class="room" id="road" hidden><div class="scene"></div><div class="rides" id="rides"></div><span class="hint">Pick a ride. Clawd does one lap; click the road to go again.</span></div>
+</main>
+
+
+<button id="backTo" type="button" aria-hidden="true" tabindex="-1"><span class="arw" aria-hidden="true"></span><span></span></button>
+
+<script src="assets/lottie_canvas.min.js"></script>
+<script src="assets/site/loader.js?v=8"></script>
+<script src="assets/site/dots.js?v=8"></script>
+<script src="assets/site/space.js?v=8"></script>
+<script>
+// ---------- catalogue ----------
+// [file, title, what he's doing (for the stage), plaque line, words that ask for it]
+const ACTS = [
+  ["Arcade", "Arcade", "playing arcade games", "One more credit. Always one more.", "arcade game games play gaming"],
+  ["BerryPicking", "Berry picking", "picking berries", "A full basket, a few eaten on the way.", "berry berries pick picking fruit snack eat food"],
+  ["Blooming", "Blooming", "watching flowers bloom", "Patience, rewarded in petals.", "bloom blooming grow spring plant"],
+  ["BreakDancing", "Break dancing", "break dancing", "Eight legs is an unfair advantage.", "breakdance break breakdancing spin"],
+  ["Bubble", "Bubble", "blowing bubbles", "Each one, briefly, perfect.", "bubble bubbles blow"],
+  ["Coffee", "Coffee", "having a coffee", "The first sip of the morning.", "coffee tea drink cafe latte"],
+  ["Confetti", "Confetti", "throwing confetti", "Celebrating, for no reason in particular.", "confetti celebrate party"],
+  ["ConfettiHappy", "Confetti, happy", "celebrating", "Celebrating, for a very good reason.", "yay hooray congrats congratulations win"],
+  ["Dancing", "Dancing", "dancing", "A small shuffle, all heart.", "dance dancing groove happy joy"],
+  ["Desktop", "Desktop", "working at the desktop", "Shipping, on the big screen.", "desktop computer pc work"],
+  ["Excited", "Excited", "very excited", "Can barely sit still.", "excited excite wow omg"],
+  ["Fishing", "Fishing", "fishing", "A line, a wait, a very small fish.", "fish fishing"],
+  ["Headphones", "Headphones", "listening to music", "Do not disturb; it's a good song.", "music headphones song listen"],
+  ["Heart", "Heart", "sending you a heart", "For whoever is looking.", "love heart hug like"],
+  ["HulaHoop", "Hula hoop", "hula hooping", "Harder with a body this shape.", "hula hoop"],
+  ["Juggling", "Juggling", "juggling", "Three things at once, gracefully.", "juggle juggling"],
+  ["Jumping", "Jumping", "jumping", "Hop.", "jump jumping hop"],
+  ["JumpingHappy", "Jumping, happy", "jumping for joy", "Hop, with feeling.", "bounce"],
+  ["Laptop", "Laptop", "coding on the laptop", "Working from anywhere.", "laptop code coding program work"],
+  ["Lightbulb", "Lightbulb", "having an idea", "Oh. Oh!", "idea lightbulb light bulb"],
+  ["Meditating", "Meditating", "meditating", "Breathing in, breathing out.", "meditate meditating calm zen relax breathe"],
+  ["Notebook", "Notebook", "writing in the notebook", "Notes to self.", "write writing notebook notes journal"],
+  ["Phone", "Phone", "on the phone", "Scrolling, or calling home.", "phone call text"],
+  ["Rainbow", "Rainbow", "making a rainbow", "After rain, colour.", "rainbow color colour"],
+  ["Rose", "Rose", "offering you a rose", "For you.", "rose flower gift romantic"],
+  ["Snooze", "Snooze", "napping", "Z z z.", "sleep snooze nap tired bed rest"],
+  ["Spark", "Spark", "making sparks", "A small burst of something.", "spark sparkle magic"],
+  ["Sunglasses", "Sunglasses", "looking cool", "Too cool to explain.", "cool sunglasses shades sun"],
+  ["Swaying", "Swaying", "swaying", "Gently, to no music at all.", "sway swaying"],
+  ["Thinking", "Thinking", "thinking", "Considering it carefully.", "think thinking hmm ponder"],
+  ["Turning", "Turning", "turning around", "A full turn, to show the back.", "turn turning spin around"],
+  ["Watch", "Watch", "checking the time", "Not late. Probably.", "watch time clock"],
+  ["Watering", "Watering", "watering the plants", "Somebody has to.", "water watering garden plants"],
+];
+const MOVES = [
+  ["waving", "Waving", "waving hello", "Hello, hello.", "hi hello hey wave waving bye goodbye"],
+  ["looking", "Looking", "looking around", "Checking who's there.", "look looking around peek shifty suspicious sneaky"],
+  ["walking", "Walking", "walking", "Off somewhere important.", "walk walking"],
+];
+const SPRITES = [
+  ["astronaut", "Astronaut", "Helmet on, floating free.", "space"],
+  ["pool", "Pool float", "Shades on, nowhere to be.", "pool"],
+  ["kite", "Kite", "A windy afternoon.", "sky"],
+  ["walk", "Walking", "On foot, the long way round.", "road"],
+  ["skate", "Skateboard", "Mostly stays on.", "road"],
+  ["scooter", "Scooter", "Purple, with a little bell.", "road"],
+  ["bike", "Bike", "Helmet on.", "road"],
+  ["car", "Race car", "Top speed: unclear.", "road"],
+];
+// Which frames loop while riding, from the site's own sprite metadata.
+const RIDE = {
+  walk: { cruise: range(10, 25), outro: 25, speed: 30 },
+  skate: { cruise: [...range(23, 37), ...range(48, 56), ...range(31, 37), ...range(48, 56)], outro: 56, speed: 90 },
+  scooter: { cruise: range(26, 41), outro: 63, speed: 60 },
+  bike: { cruise: range(20, 43), outro: 43, speed: 75 },
+  car: { cruise: range(29, 35), outro: 35, speed: 200 },
+  kite: { cruise: null, speed: 26 },
+};
+function range(a, b) { return Array.from({ length: b - a }, (_, i) => a + i); }
+
+// Moves that only exist in Clawd's Quest: [key, title, what he's doing, plaque line, words].
+// The game's other 17 sprites are pixel-identical to the site's animations, so they aren't hung twice.
+const QUEST = [
+  ["CrabWalking", "Crab walking", "walking like a crab", "Sideways, the traditional way.", "crab sideways scuttle"],
+  ["Disappointed", "Disappointed", "disappointed", "The build failed again.", "sad disappointed upset fail failed broken"],
+  ["Dizzy", "Dizzy", "dizzy", "Too many tabs open.", "dizzy confused overwhelmed"],
+  ["Facepalm", "Facepalm", "facepalming", "It was a typo the whole time.", "facepalm ugh oops typo bug mistake"],
+  ["Hula", "Hula", "dancing the hula", "No hoop this time, just the sway.", "luau aloha"],
+  ["LookingAround", "Glancing around", "glancing around", "Checking both sides.", "glance glancing"],
+  ["Pointing", "Pointing", "pointing at something", "Over there. No, there.", "point pointing there"],
+  ["Running", "Running", "running", "Late for standup.", "run running hurry fast late"],
+];
+
+// The wall, grouped by what Clawd is doing: [heading, note, pieces]
+const GROUPS = [
+  ["Hello there", "Waves, glances and small gifts.",
+    ["move:waving", "move:looking", "quest:LookingAround", "quest:Pointing", "act:Heart", "act:Rose"]],
+  ["Mood swings", "Good days, bad days and too many tabs.",
+    ["act:Excited", "act:Confetti", "act:ConfettiHappy", "act:Jumping", "act:JumpingHappy", "act:Sunglasses", "act:Spark", "quest:Disappointed", "quest:Dizzy", "quest:Facepalm"]],
+  ["At work", "Screens, notes and the coffee behind them.",
+    ["act:Laptop", "act:Desktop", "act:Notebook", "act:Phone", "act:Watch", "act:Coffee", "act:Thinking", "act:Lightbulb"]],
+  ["Dance and play", "Hoops, records and an arcade machine.",
+    ["act:Dancing", "act:BreakDancing", "quest:Hula", "act:HulaHoop", "act:Juggling", "act:Turning", "act:Arcade", "act:Headphones"]],
+  ["Slowing down", "Breathing, swaying and the occasional nap.",
+    ["act:Swaying", "act:Bubble", "act:Meditating", "act:Snooze"]],
+  ["Outdoors", "Fish, berries, flowers and a kite.",
+    ["act:Fishing", "act:BerryPicking", "act:Blooming", "act:Watering", "act:Rainbow", "sprite:kite", "sprite:pool"]],
+  ["Getting around", "On foot, on wheels and in orbit.",
+    ["move:walking", "quest:CrabWalking", "quest:Running", "sprite:skate", "sprite:scooter", "sprite:bike", "sprite:car", "sprite:astronaut"]],
+];
+const TOTAL = GROUPS.reduce((n, g) => n + g[2].length, 0);
+const $ = s => document.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const actPath = f => `assets/acts/Clawd-${f}.json`;
+const movePath = f => `assets/video/clawd-${f}.json`;
+
+// ---------- red dots ----------
+let seen = new Set();
+try { seen = new Set(JSON.parse(localStorage.getItem("clawd-seen") || "[]")); } catch {}
+function markSeen(id) {
+  if (!seen.has(id)) {
+    seen.add(id);
+    try { localStorage.setItem("clawd-seen", JSON.stringify([...seen])); } catch {}
+  }
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.add("seen"));
+  updateCount();
+}
+function updateCount() {
+  const n = [...seen].filter(id => document.querySelector(`[data-id="${id}"]`)).length;
+  $("#seenText").textContent =
+    n >= TOTAL ? `All ${TOTAL} seen. You're a regular.` : `${n} of ${TOTAL} seen`;
+}
+
+// ---------- the stage ----------
+const stage = $("#stage"), status = $("#status");
+let anim = null, latest = null, plays = 0, idleTimer = 0, onStage = null, pats = [], spriteTimer = 0;
+
+function setStatus(t) { status.textContent = t; }
+
+function perform(path, { doing, id, loops = null, idle = false } = {}) {
+  if (path.startsWith("quest:")) return performSprite(path.slice(6), { doing, id, loops });
+  const layer = document.createElement("div");
+  layer.className = "layer";
+  stage.appendChild(layer);
+  latest = layer;
+  const next = lottie.loadAnimation({ container: layer, renderer: "canvas", loop: idle, autoplay: true, path });
+  next.addEventListener("DOMLoaded", () => {
+    if (layer !== latest) { next.destroy(); layer.remove(); return; } // a newer request won
+    // swap only once the new one is ready, so there's no blank flash
+    if (anim) { anim.destroy(); }
+    clearInterval(spriteTimer);
+    [...stage.children].forEach(c => { if (c !== layer) c.remove(); });
+    anim = next;
+    const seconds = (next.totalFrames / next.frameRate) || 1;
+    plays = idle ? Infinity : (loops ?? Math.max(2, Math.ceil(4.5 / seconds)));
+  });
+  next.addEventListener("complete", () => {
+    if (next !== anim) return;
+    if (--plays > 0) next.goToAndPlay(0, true);
+    else goIdle();
+  });
+  onStage = { path, idle };
+  if (doing) setStatus(`Clawd is ${doing}.`);
+  if (id) markSeen(id);
+  clearTimeout(idleTimer);
+}
+
+// The game's pixel sprites play on the stage too, scaled to match the Lottie Clawd.
+let QS = null;
+// Size and place a sprite inside a 2750:1850 box so his body matches the Lottie Clawd's.
+function placeSprite(c, s) {
+  const [bx, by, bw, bh] = s.a0 ?? [0, 0, s.w, s.h];
+  const k = .44 / (s.a0 ? bw : 24); // one sprite pixel as a fraction of the box width; Clawd's body is 24px wide
+  c.className = "px";
+  c.style.cssText = `position:absolute;image-rendering:pixelated;width:${s.w * k * 100}%;height:auto;` +
+    `left:${(50 - (bx + bw / 2) * k * 100)}%;top:${(97 - (by + bh) * k * 100 * 2750 / 1850)}%;`;
+}
+function performSprite(k, { doing, id, loops = null } = {}) {
+  const s = QS?.[k];
+  if (!s) return;
+  latest = null; // drops any Lottie still loading
+  anim?.destroy(); anim = null;
+  clearInterval(spriteTimer); clearTimeout(idleTimer);
+  const layer = document.createElement("div"), c = document.createElement("canvas");
+  layer.className = "layer";
+  placeSprite(c, s);
+  layer.appendChild(c);
+  stage.replaceChildren(layer);
+  const draw = pixelCanvas(c, s, 1);
+  placeSprite(c, s);
+  let i = 0, left = loops ?? Math.max(2, Math.ceil(4.5 / (s.frames.length / s.fps)));
+  draw(0);
+  spriteTimer = setInterval(() => {
+    if (++i >= s.frames.length) { i = 0; if (--left <= 0) { clearInterval(spriteTimer); goIdle(); return; } }
+    draw(i);
+  }, 1000 / s.fps);
+  onStage = { path: `quest:${k}`, idle: false };
+  if (doing) setStatus(`Clawd is ${doing}.`);
+  if (id) markSeen(id);
+}
+
+function goIdle() {
+  perform(movePath("looking"), { idle: true, doing: "looking around" });
+  idleTimer = setTimeout(() => {
+    perform(actPath("Snooze"), { idle: true, doing: "napping. Click to wake Clawd", id: "act:Snooze" });
+  }, 25000);
+}
+
+function wakeIfNapping() {
+  if (onStage?.path === actPath("Snooze") && onStage.idle) {
+    perform(movePath("waving"), { doing: "awake! Hello", id: "move:waving", loops: 2 });
+    return true;
+  }
+  return false;
+}
+
+function pat() {
+  if (wakeIfNapping()) return;
+  const now = performance.now();
+  pats = pats.filter(t => now - t < 1600).concat(now);
+  if (pats.length >= 4) {
+    pats = [];
+    perform(actPath("ConfettiHappy"), { doing: "overjoyed. That's a lot of pats", id: "act:ConfettiHappy" });
+  } else {
+    perform(actPath("Heart"), { doing: "happy you said hi", id: "act:Heart", loops: 1 });
+  }
+}
+stage.addEventListener("click", pat);
+stage.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pat(); } });
+
+// ---------- asking ----------
+const vocab = [];
+for (const [f, title, doing, , words] of ACTS) vocab.push({ id: `act:${f}`, path: actPath(f), doing, words: words.split(" ") });
+for (const [f, title, doing, , words] of MOVES) vocab.push({ id: `move:${f}`, path: movePath(f), doing, words: words.split(" ") });
+for (const [k, title, doing, , words] of QUEST) if (words) vocab.push({ id: `quest:${k}`, path: `quest:${k}`, doing, words: words.split(" ") });
+
+function understand(text) {
+  const tokens = text.toLowerCase().replace(/[^a-z\s]/g, " ").split(/\s+/).filter(Boolean);
+  if (tokens.some(t => ["random", "surprise", "anything", "something"].includes(t)))
+    return vocab[Math.random() * vocab.length | 0];
+  // a direct word match wins over a prefix match ("dance" vs "dancing")
+  for (const t of tokens) { const hit = vocab.find(v => v.words.includes(t)); if (hit) return hit; }
+  for (const t of tokens) {
+    if (t.length < 4) continue;
+    const hit = vocab.find(v => v.words.some(w => w.startsWith(t) || t.startsWith(w) && w.length >= 4));
+    if (hit) return hit;
+  }
+  return null;
+}
+
+$("#ask").addEventListener("submit", e => {
+  e.preventDefault();
+  const input = $("#askInput"), text = input.value.trim();
+  if (!text) return;
+  const hit = understand(text);
+  if (hit) perform(hit.path, { doing: hit.doing, id: hit.id });
+  else {
+    perform(actPath("Thinking"), { doing: "thinking", id: "act:Thinking", loops: 2 });
+    setStatus(`Clawd doesn't know “${text}” yet. Try dance, fish or sleep.`);
+  }
+  input.value = "";
+});
+
+const SUGGEST = ["say hi", "make coffee", "go fishing", "dance", "juggle", "have an idea", "play music", "facepalm", "get dizzy", "surprise me"];
+for (const s of SUGGEST) {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = s;
+  b.onclick = () => { $("#askInput").value = s; $("#ask").requestSubmit(); };
+  $("#suggest").appendChild(b);
+}
+addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement !== $("#askInput")) { e.preventDefault(); $("#askInput").focus(); }
+});
+
+// ---------- top bar: wall colours ----------
+const WALLS = ["red", "white", "navy", "green"];
+function setWall(w) {
+  document.documentElement.dataset.theme = w;
+  try { localStorage.setItem("clawd-wall", w); } catch {}
+  document.querySelectorAll(".nav-links .tab").forEach(b => b.setAttribute("aria-selected", b.dataset.wall === w));
+}
+// textures live in a small menu under each colour tab: picking one sets that colour and texture
+const TEXTURES = [["plain", "PLAIN"], ["clawd", "CLAWD WALLPAPER"], ["stripes", "REGENCY STRIPES"], ["dots", "PIXEL DOTS"], ["linen", "LINEN"]];
+function setTexture(t) {
+  document.documentElement.dataset.texture = t;
+  try { localStorage.setItem("clawd-texture", t); } catch {}
+  document.querySelectorAll(".tex-menu button").forEach(b => b.setAttribute("aria-checked", b.dataset.t === t));
+}
+document.querySelectorAll(".nav-item").forEach(item => {
+  const tab = item.querySelector(".tab"), menu = item.querySelector(".tex-menu"), wall = tab.dataset.wall;
+  for (const [t, label] of TEXTURES) {
+    const b = document.createElement("button");
+    b.type = "button"; b.setAttribute("role", "menuitemradio"); b.dataset.t = t;
+    // a swatch of this colour with this texture, drawn by the same CSS as the wall
+    b.innerHTML = `<span class="sw" data-theme="${wall}" data-texture="${t}"></span><span>${label}</span><span class="tick">✓</span>`;
+    b.onclick = () => { setWall(wall); setTexture(t); hush(item); };
+    menu.appendChild(b);
+  }
+  // click a tab: switch colour; on touch screens it also opens or closes its menu
+  tab.onclick = () => {
+    setWall(wall);
+    // on touch screens the first tap opens the menu so a texture can be picked; otherwise a click just closes it
+    if (matchMedia("(hover: none)").matches && !item.classList.contains("open")) {
+      document.querySelectorAll(".nav-item.open").forEach(i => i.classList.remove("open"));
+      item.classList.remove("hush"); item.classList.add("open");
+    } else hush(item);
+  };
+  item.addEventListener("mouseleave", () => item.classList.remove("hush"));
+});
+function hush(item) {
+  item.classList.remove("open"); item.classList.add("hush");
+  document.activeElement?.blur();
+}
+addEventListener("click", e => { if (!e.target.closest(".nav-item")) document.querySelectorAll(".nav-item.open").forEach(i => i.classList.remove("open")); });
+setWall(document.documentElement.dataset.theme);
+setTexture(TEXTURES.some(x => x[0] === document.documentElement.dataset.texture) ? document.documentElement.dataset.texture : "plain");
+// like claude.dev's nav, the bracketed keys work as shortcuts
+addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest?.("input, textarea")) return;
+  const i = "1234".indexOf(e.key);
+  if (i >= 0) setWall(WALLS[i]);
+});
+$(".nav-brand").addEventListener("click", e => { e.preventDefault(); scrollTo({ top: 0 }); });
+
+// ---------- seen markers ----------
+// pixel art from rows of "#", as a data URL
+// multi-colour pixel art, drawn at `scale` with a dark outline so it shows on any background
+function pixelArtURL(rows, colours, scale = 2, outline = "#2a2722") {
+  const h = rows.length, w = rows[0].length, c = document.createElement("canvas");
+  c.width = (w + 2) * scale; c.height = (h + 2) * scale;
+  const ctx = c.getContext("2d"), on = (x, y) => colours[rows[y]?.[x]];
+  ctx.fillStyle = outline;
+  for (let y = -1; y <= h; y++) for (let x = -1; x <= w; x++) {
+    if (on(x, y)) continue;
+    if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => on(x + dx, y + dy))) ctx.fillRect((x + 1) * scale, (y + 1) * scale, scale, scale);
+  }
+  rows.forEach((r, y) => [...r].forEach((ch, x) => { if (colours[ch]) { ctx.fillStyle = colours[ch]; ctx.fillRect((x + 1) * scale, (y + 1) * scale, scale, scale); } }));
+  return c.toDataURL();
+}
+function pixelURL(rows, colour) {
+  const c = document.createElement("canvas");
+  c.width = rows[0].length; c.height = rows.length;
+  const ctx = c.getContext("2d"); ctx.fillStyle = colour;
+  rows.forEach((r, y) => [...r].forEach((ch, x) => ch === "#" && ctx.fillRect(x, y, 1, 1)));
+  return c.toDataURL();
+}
+const PAW = pixelURL(["....##...##....", "...####.####...", "...####.####...", "....##...##....", ".##.........##.", "####.......####", "####.......####", ".##...###...##.", ".....#####.....", "....#######....", "...#########...", "...#########...", "....#######...."], "#b8452e");
+const STAR = pixelURL(["....#....", "....#....", "...###...", "#########", ".#######.", "..#####..", "..##.##..", ".##...##.", ".#.....#."], "#f2c14e");
+const STAR_ICON = pixelURL(["....#....", "....#....", "...###...", "#########", ".#######.", "..#####..", "..##.##..", ".##...##.", ".#.....#."], "#d9a520");
+// [key, button label, icon html, words for the collection note]
+const MARKERS = [
+  ["dot", "Red dot", '<span class="ic-dot"></span>', "A red dot"],
+  ["stamp", "Stamp", '<span class="ic-stamp">COLLECTED</span>', "A COLLECTED stamp"],
+  ["paw", "Paw", `<img src="${PAW}" alt="">`, "A paw print"],
+  ["star", "Star", `<img src="${STAR_ICON}" alt="">`, "A gold star"],
+];
+function setMarker(m) {
+  document.documentElement.dataset.marker = m;
+  try { localStorage.setItem("clawd-marker", m); } catch {}
+  const [, , icon, words] = MARKERS.find(x => x[0] === m);
+  document.querySelectorAll("#markerOpts button").forEach(b => b.setAttribute("aria-checked", b.dataset.m === m));
+  $(".count-ic").innerHTML = icon;
+  $("#markerWord").textContent = words;
+}
+for (const [m, name, icon] of MARKERS) {
+  const b = document.createElement("button");
+  b.type = "button"; b.setAttribute("role", "radio"); b.dataset.m = m; b.title = name;
+  b.innerHTML = `${icon}<span class="txt">${name}</span>`;
+  b.onclick = () => setMarker(m);
+  $("#markerOpts").appendChild(b);
+}
+setMarker(MARKERS.some(x => x[0] === document.documentElement.dataset.marker) ? document.documentElement.dataset.marker : "stamp");
+
+// ---------- back to where you were ----------
+// Clicking a piece jumps to the stage or playground; this remembers the piece and offers a way back.
+let backPiece = null, backArmed = false;
+const backBtn = $("#backTo");
+function jumpFrom(piece, target) {
+  backPiece = piece; backArmed = false;
+  backBtn.lastElementChild.textContent = `Back to ${piece.querySelector(".plaque b").textContent}`;
+  // the piece is above the playground and below the stage, so point the way back
+  const up = piece.getBoundingClientRect().top < target.getBoundingClientRect().top;
+  backBtn.classList.remove("show");
+  backBtn.classList.toggle("up", up);
+  void backBtn.offsetWidth; // restart the slide-in from the new side
+  backBtn.classList.add("show"); backBtn.removeAttribute("aria-hidden"); backBtn.tabIndex = 0;
+  target.scrollIntoView({ block: "start" });
+  setTimeout(() => { backArmed = true; }, 1000); // let the scroll finish before watching for a manual return
+}
+function hideBack() {
+  backBtn.classList.remove("show"); backBtn.setAttribute("aria-hidden", "true"); backBtn.tabIndex = -1;
+  backPiece = null;
+}
+backBtn.addEventListener("click", () => {
+  const p = backPiece;
+  hideBack();
+  if (!p) return;
+  p.scrollIntoView({ block: "center" });
+  p.focus({ preventScroll: true });
+});
+// if they scroll back to the piece themselves, the button isn't needed any more
+addEventListener("scroll", () => {
+  if (!backPiece || !backArmed) return;
+  const r = backPiece.getBoundingClientRect();
+  if (r.top < innerHeight * .8 && r.bottom > innerHeight * .2) hideBack();
+}, { passive: true });
+
+// ---------- the wall ----------
+const markers = `<span class="mk mk-dot" aria-hidden="true"></span><span class="mk mk-stamp" aria-hidden="true">COLLECTED</span><img class="mk mk-star" src="${STAR}" alt="">`;
+function piece(wall, id, title, line) {
+  const b = document.createElement("button");
+  b.className = "piece"; b.dataset.id = id;
+  b.innerHTML = `<div class="frame"><div class="mat"><div class="art"></div><img class="mk mk-paw" src="${PAW}" alt=""></div>${markers}</div>
+    <div class="plaque"><b>${title}</b>${line}</div>`;
+  if (seen.has(id)) b.classList.add("seen");
+  wall.appendChild(b);
+  return b;
+}
+
+// Lottie pieces load lazily and rest on their middle frame, where the prop is in view.
+const lazy = new IntersectionObserver(entries => {
+  for (const e of entries) if (e.isIntersecting) { lazy.unobserve(e.target); e.target._load(); }
+}, { rootMargin: "300px" });
+
+function hangLottie(wall, id, path, title, line, doing) {
+  const b = piece(wall, id, title, line);
+  const art = b.querySelector(".art");
+  let a = null, rest = 0;
+  art._load = () => {
+    a = lottie.loadAnimation({ container: art, renderer: "canvas", loop: true, autoplay: false, path });
+    a.addEventListener("DOMLoaded", () => { rest = Math.floor(a.totalFrames * .55); a.goToAndStop(rest, true); });
+  };
+  lazy.observe(art);
+  const start = () => { if (a && !reduced) a.play(); };
+  const stop = () => { if (a) a.goToAndStop(rest, true); };
+  b.addEventListener("pointerenter", start); b.addEventListener("focus", start);
+  b.addEventListener("pointerleave", stop); b.addEventListener("blur", stop);
+  b.addEventListener("click", () => {
+    perform(path, { doing, id });
+    jumpFrom(b, $(".stage-room"));
+  });
+}
+
+// Every piece is hung now, in group order; pixel pieces get their art once their data loads.
+const CATALOG = {};
+for (const [f, title, doing, line] of ACTS) CATALOG[`act:${f}`] = { path: actPath(f), title, doing, line };
+for (const [f, title, doing, line] of MOVES) CATALOG[`move:${f}`] = { path: movePath(f), title, doing, line };
+for (const [k, title, doing, line] of QUEST) CATALOG[`quest:${k}`] = { quest: k, title, doing, line };
+for (const [k, title, line, room] of SPRITES) CATALOG[`sprite:${k}`] = { sprite: k, title, line, room };
+
+const questPieces = [], spritePieces = [];
+for (const [name, note, ids] of GROUPS) {
+  const head = document.createElement("div"), p = document.createElement("p"), hang = document.createElement("div");
+  head.className = "wing-head"; head.innerHTML = `<h2>${name}</h2>`;
+  p.className = "wing-note"; p.textContent = note;
+  hang.className = "hang";
+  $("#collection").append(head, p, hang);
+  for (const id of ids) {
+    const c = CATALOG[id];
+    if (c.path) hangLottie(hang, id, c.path, c.title, c.line, c.doing);
+    else if (c.quest) questPieces.push([c, piece(hang, id, c.title, c.line)]);
+    else spritePieces.push([c, piece(hang, id, c.title, c.line)]);
+  }
+}
+
+// ---------- pixel sprites (palette indices per pixel, 255 = transparent) ----------
+function decodeRaw(s) {
+  const frames = [], cur = Uint8Array.from([...s.base].map(c => c === "." ? 255 : parseInt(c, 36)));
+  frames.push(cur.slice());
+  for (const d of s.deltas) {
+    if (d) for (const tok of d.split(",")) {
+      const n = tok.length - 1;
+      cur[parseInt(tok.slice(0, n), 36)] = tok[n] === "." ? 255 : parseInt(tok[n], 36);
+    }
+    frames.push(cur.slice());
+  }
+  return frames;
+}
+function decode(s) {
+  return decodeRaw(s).map(f => {
+    const c = document.createElement("canvas");
+    c.width = s.w; c.height = s.h;
+    const ctx = c.getContext("2d");
+    for (let i = 0; i < f.length; i++) {
+      if (f[i] === 255) continue;
+      ctx.fillStyle = s.palette[f[i]];
+      ctx.fillRect(i % s.w, (i / s.w) | 0, 1, 1);
+    }
+    return c;
+  });
+}
+
+function pixelCanvas(canvas, sprite, scale) {
+  canvas.width = sprite.w; canvas.height = sprite.h;
+  canvas.style.width = sprite.w * scale + "px"; canvas.style.height = sprite.h * scale + "px";
+  const ctx = canvas.getContext("2d");
+  return i => { ctx.clearRect(0, 0, sprite.w, sprite.h); ctx.drawImage(sprite.frames[i], 0, 0); };
+}
+
+let SP = null;
+fetch("assets/sprites.json").then(r => r.json()).then(data => {
+  SP = {};
+  for (const [k, s] of Object.entries(data)) SP[k] = { ...s, frames: decode(s) };
+  for (const [{ sprite: k, room }, b] of spritePieces) {
+    const art = b.querySelector(".art"), c = document.createElement("canvas");
+    art.style.position = "relative";
+    art.appendChild(c);
+    const s = SP[k], draw = pixelCanvas(c, s, 1);
+    placeSprite(c, s);
+    const rest = RIDE[k]?.cruise?.[0] ?? Math.floor(s.frames.length / 2);
+    draw(rest);
+    let t = 0, i = rest;
+    b.addEventListener("pointerenter", () => { if (reduced) return; clearInterval(t); t = setInterval(() => draw(i = (i + 1) % s.frames.length), 1000 / s.fps); });
+    b.addEventListener("pointerleave", () => { clearInterval(t); draw(i = rest); });
+    b.addEventListener("click", () => {
+      if (room === "road") pickRide(k); else openRoom(room);
+      jumpFrom(b, $("#playground"));
+    });
+  }
+  setupRooms();
+});
+
+fetch("assets/quest-sprites.json").then(r => r.json()).then(data => {
+  QS = {};
+  for (const [k, s] of Object.entries(data)) QS[k] = { ...s, frames: decode(s) };
+  for (const [{ quest: k, doing }, b] of questPieces) {
+    const id = `quest:${k}`, art = b.querySelector(".art");
+    const c = document.createElement("canvas");
+    art.style.position = "relative";
+    art.appendChild(c);
+    const s = QS[k], draw = pixelCanvas(c, s, 1);
+    placeSprite(c, s);
+    const rest = Math.floor(s.frames.length / 2);
+    draw(rest);
+    let t = 0, i = rest;
+    b.addEventListener("pointerenter", () => { if (reduced) return; clearInterval(t); t = setInterval(() => draw(i = (i + 1) % s.frames.length), 1000 / s.fps); });
+    b.addEventListener("pointerleave", () => { clearInterval(t); draw(i = rest); });
+    b.addEventListener("click", () => { performSprite(k, { doing, id }); jumpFrom(b, $(".stage-room")); });
+  }
+});
+
+// ---------- playground (claude.dev's own scene code, via assets/site/loader.js) ----------
+const ROOMS = ["space", "pool", "sky", "road"];
+const RIDES = ["walk", "skate", "bike", "scooter", "car"];
+// on-screen speed for each ride, in px per second
+const RIDE_SPEED = { walk: 60, skate: 110, bike: 190, scooter: 280, car: 520 };
+let activeRoom = "space", ride = "walk", running = [], road = null;
+
+function openRoom(name, { quiet = false } = {}) {
+  activeRoom = name;
+  document.querySelectorAll(".rooms-tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.room === name));
+  for (const r of ROOMS) document.getElementById(r).hidden = r !== name;
+  // only the visible room runs; scenes size themselves from their box, so start after unhiding
+  running.forEach(x => x?.stop?.());
+  running = [];
+  const room = document.getElementById(name), scene = room.querySelector(".scene"), box = room.querySelector(".actor-box");
+  scene.replaceChildren(); box?.replaceChildren();
+  const S = clawdScenes();
+  const color = getComputedStyle(document.documentElement).getPropertyValue("--space-dot").trim();
+  const dots = { colorVar: "--space-dot", color, spacing: 9, rA: 1.35, rB: 2.4 };
+  let actor = null;
+  const avoidRef = () => actor?.getRect?.() ?? null;
+  if (name === "space") {
+    actor = S.clawdActor(box, { mode: "astronaut", px: 2.7, home: { x: .5, y: .5 }, skipIntro: true });
+    running.push(S.spaceField(scene, { progressRef: { p: 1 }, avoidRef, spacing: 9 }));
+    if (!quiet) markSeen("sprite:astronaut");
+  } else if (name === "pool") {
+    actor = S.clawdActor(box, { mode: "pool", px: 2.7, home: { x: .5, y: .6 } });
+    running.push(S.poolWater(scene, { ...dots, avoidRef, clickHost: room }));
+    if (!quiet) markSeen("sprite:pool");
+  } else if (name === "sky") {
+    actor = kiteActor(box, SP.kite, 2.7);
+    running.push(S.dotSky(scene, { ...dots }));
+    if (!quiet) markSeen("sprite:kite");
+  } else {
+    road = S.rideScene(scene, { ...dots, px: 2.7, progressRef: { p: 1 }, vehicle: ride, startX: .1, screenSpeed: RIDE_SPEED[ride], stopAfterLap: true });
+    running.push(road);
+    document.querySelectorAll("#rides button").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === ride));
+    if (!quiet) markSeen(`sprite:${ride}`);
+  }
+  running.push(actor);
+}
+document.querySelectorAll(".rooms-tabs button").forEach(b => b.onclick = () => openRoom(b.dataset.room));
+
+// Sky: Clawd stands where the site puts him; a click sends the kite drifting there.
+// Each frame is split by colour: the largest blob of body pixels is Clawd, the
+// kite and its tail move by the drift offset, and the string stretches between.
+function kiteActor(box, sprite, px) {
+  const raw = decodeRaw(sprite), W = sprite.w, H = sprite.h, pal = sprite.palette;
+  const BODY = new Set([0, 1, 2]), KITE = new Set([3, 4]), STRING = 5;
+  const parts = raw.map(f => {
+    // Clawd = largest 4-connected group of body colours
+    const seen = new Uint8Array(f.length), groups = [];
+    for (let i = 0; i < f.length; i++) {
+      if (seen[i] || !BODY.has(f[i])) continue;
+      const g = [], stack = [i]; seen[i] = 1;
+      while (stack.length) {
+        const j = stack.pop(), x = j % W, y = (j / W) | 0; g.push(j);
+        for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+          const n = ny * W + nx;
+          if (nx >= 0 && ny >= 0 && nx < W && ny < H && !seen[n] && BODY.has(f[n])) { seen[n] = 1; stack.push(n); }
+        }
+      }
+      groups.push(g);
+    }
+    groups.sort((a, b) => b.length - a.length);
+    const isBody = new Set(groups[0] || []), body = [], kite = [], string = [];
+    for (let i = 0; i < f.length; i++) {
+      if (f[i] === 255) continue;
+      const p = { x: i % W, y: (i / W) | 0, c: pal[f[i]], i: f[i] };
+      if (isBody.has(i)) body.push(p); else if (f[i] === STRING) string.push(p); else kite.push(p);
+    }
+    const kc = kite.filter(p => KITE.has(p.i)); // the kite itself, not its tail
+    const cx = kc.reduce((s, p) => s + p.x, 0) / (kc.length || 1), cy = kc.reduce((s, p) => s + p.y, 0) / (kc.length || 1);
+    // the string's hand end is its lowest pixel; each pixel moves by its share of the way to the kite
+    const hand = string.reduce((a, p) => (!a || p.y > a.y ? p : a), null);
+    if (hand) {
+      const vx = cx - hand.x, vy = cy - hand.y, len2 = vx * vx + vy * vy || 1;
+      for (const p of string) p.t = Math.max(0, Math.min(1, ((p.x - hand.x) * vx + (p.y - hand.y) * vy) / len2));
+      string.sort((a, b) => a.t - b.t);
+    }
+    return { body, kite, string, cx, cy, flying: kite.length > 40 };
+  });
+  const firstFlying = parts.findIndex(p => p.flying), lastFlying = parts.length - 1 - [...parts].reverse().findIndex(p => p.flying);
+  const ref = parts[(firstFlying + lastFlying) >> 1]; // where the kite sits mid-flight, before it's moved
+
+  const c = document.createElement("canvas");
+  c.style.cssText = "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;";
+  box.appendChild(c);
+  const ctx = c.getContext("2d");
+  const fit = () => {
+    const r = Math.min(2, devicePixelRatio || 1);
+    c.width = box.clientWidth * r; c.height = box.clientHeight * r; ctx.setTransform(r, 0, 0, r, 0, 0);
+  };
+  fit();
+  const ro = new ResizeObserver(fit); ro.observe(box);
+
+  let dx = 0, dy = 0, tx = 0, ty = 0, moved = false, frame = 0, ft = 0, last = 0, raf = 0, stopped = false;
+  const origin = () => ({ ox: box.clientWidth / 2 - W * px / 2, oy: box.clientHeight - H * px });
+  const room = box.closest(".room");
+  const onClick = e => {
+    const r = box.getBoundingClientRect(), { ox, oy } = origin();
+    const x = Math.max(8, Math.min(r.width - 8, e.clientX - r.left)), y = Math.max(8, Math.min(r.height - 30, e.clientY - r.top));
+    tx = (x - ox) / px - ref.cx; ty = (y - oy) / px - ref.cy; moved = true;
+  };
+  room.addEventListener("click", onClick);
+
+  const cell = (ox, oy, x, y, col) => {
+    const x0 = Math.round(ox + x * px), y0 = Math.round(oy + y * px);
+    ctx.fillStyle = col; ctx.fillRect(x0, y0, Math.round(ox + (x + 1) * px) - x0, Math.round(oy + (y + 1) * px) - y0);
+  };
+  const draw = t => {
+    if (stopped) return;
+    const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+    const k = 1 - Math.exp(-dt * .7); // slow drift toward the click
+    dx += (tx - dx) * k; dy += (ty - dy) * k;
+    if (t - ft > 1000 / sprite.fps) {
+      ft = t;
+      frame++;
+      // once the kite has been moved, keep it in the air instead of replaying the reel-in
+      if (moved && (frame > lastFlying || frame < firstFlying)) frame = firstFlying;
+      frame %= parts.length;
+    }
+    const P = parts[frame], { ox, oy } = origin(), ix = Math.round(dx), iy = Math.round(dy);
+    ctx.clearRect(0, 0, box.clientWidth, box.clientHeight);
+    // string first, so the kite and Clawd sit on top of it
+    let prev = null;
+    for (const p of P.string) {
+      const q = { x: p.x + Math.round(p.t * ix), y: p.y + Math.round(p.t * iy), c: p.c };
+      if (prev) { // fill gaps so the stretched string stays one line
+        const n = Math.max(Math.abs(q.x - prev.x), Math.abs(q.y - prev.y));
+        for (let s = 1; s < n; s++) cell(ox, oy, Math.round(prev.x + (q.x - prev.x) * s / n), Math.round(prev.y + (q.y - prev.y) * s / n), q.c);
+      }
+      cell(ox, oy, q.x, q.y, q.c);
+      prev = q;
+    }
+    for (const p of P.kite) cell(ox, oy, p.x + ix, p.y + iy, p.c);
+    for (const p of P.body) cell(ox, oy, p.x, p.y, p.c);
+    raf = requestAnimationFrame(draw);
+  };
+  raf = requestAnimationFrame(draw);
+  return {
+    stop() { stopped = true; cancelAnimationFrame(raf); ro.disconnect(); room.removeEventListener("click", onClick); c.remove(); },
+    getRect() { const { ox, oy } = origin(); return { left: ox, top: oy, w: W * px, h: H * px }; },
+  };
+}
+
+function pickRide(k) { ride = k; openRoom("road"); }
+
+// room cursors: a shooting star in space, a water drop at the pool (hotspots are the star and the drop's tip)
+const STAR_CURSOR = pixelArtURL([
+  "...y.........",
+  "...y.........",
+  "..yWy........",
+  "yyWWWyy......",
+  "..yWy........",
+  "...y.o.......",
+  "...y..oo.....",
+  ".......oo....",
+  "........pp...",
+  ".........pp..",
+  "..........q..",
+  "...........q.",
+], { y: "#ffd54a", W: "#fffbe6", o: "#ffc65c", p: "#f2a65a", q: "#e07a5f" });
+const DROP_CURSOR = pixelArtURL([
+  "....b....",
+  "....b....",
+  "...bbb...",
+  "...bbb...",
+  "..bbbbb..",
+  ".bbbbbbb.",
+  ".bwbbbbb.",
+  "bwbbbbbbb",
+  "bwbbbbbbb",
+  "bbbbbbbbb",
+  ".bbbbbbb.",
+  "..bbbbb..",
+], { b: "#5aa8e6", w: "#e8f6ff" });
+$("#space").style.cursor = `url(${STAR_CURSOR}) 8 8, crosshair`;
+const TAB_ICONS = {
+  space: STAR_CURSOR,
+  pool: DROP_CURSOR,
+  sky: pixelArtURL(["...##.....", "..####.##.", ".#########", "##########", ".########."], { "#": "#ffffff" }),
+  road: pixelArtURL(["..###..", ".#...#.", "#..#..#", "#.###.#", "#..#..#", ".#...#.", "..###.."], { "#": "#9b9a91" }),
+};
+document.querySelectorAll(".rooms-tabs button").forEach(b => b.insertAdjacentHTML("afterbegin", `<img src="${TAB_ICONS[b.dataset.room]}" alt="">`));
+$("#pool").style.cursor = `url(${DROP_CURSOR}) 10 2, crosshair`;
+// after a lap, clicking the road sends him round again
+$("#road").addEventListener("click", e => { if (!e.target.closest("button")) road?.again(); });
+
+function setupRooms() {
+  for (const k of RIDES) {
+    const b = document.createElement("button");
+    b.dataset.k = k; b.textContent = SPRITES.find(r => r[0] === k)[1];
+    b.onclick = () => pickRide(k);
+    $("#rides").appendChild(b);
+  }
+  openRoom("space", { quiet: true });
+  $("#space").addEventListener("pointerenter", () => markSeen("sprite:astronaut"), { once: true });
+}
+
+// ---------- start ----------
+// the claude.dev logo: his eyes follow the pointer and he waves when you hover him
+clawdScenes().clawdNavMark($(".nav-brand"), { px: 2.5 });
+updateCount();
+perform(movePath("waving"), { doing: "waving hello", id: "move:waving", loops: 2 });
+</script>
+</body>
+</html>

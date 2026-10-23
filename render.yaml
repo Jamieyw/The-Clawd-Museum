@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: the-clawd-museum
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
