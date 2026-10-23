@@ -284,6 +284,13 @@
   #space, #pool { cursor: crosshair; } /* replaced by pixel cursors once the page script runs */
   #sky, #road { cursor: pointer; }
   .rides { position: absolute; left: 12px; top: 12px; z-index: 1; }
+  /* a long press on the wall, the stage or a room would select the frame and its plaque (and pop the iOS callout) */
+  .piece, #stage, .room { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  /* in a narrow sky the hint would cover Clawd, who stands bottom-centre */
+  @media (max-width: 760px) { #sky .hint { top: 10px; bottom: auto; } }
+  /* touch screens have no cursor, so a tap leaves the room's pixel cursor behind for a moment */
+  .tap-mark { position: absolute; pointer-events: none; image-rendering: pixelated; z-index: 2; animation: tap-fade .7s ease-out forwards; }
+  @keyframes tap-fade { 60% { opacity: 1; } to { opacity: 0; } }
 
 </style>
 </head>
@@ -1059,6 +1066,27 @@ const TAB_ICONS = {
 };
 document.querySelectorAll(".rooms-tabs button").forEach(b => b.insertAdjacentHTML("afterbegin", `<img src="${TAB_ICONS[b.dataset.room]}" alt="">`));
 $("#pool").style.cursor = `url(${DROP_CURSOR}) 10 2, crosshair`;
+
+// Touch: a tap fires no pointermove and ends with a pointerleave, so claude.dev's clawdActor
+// never gets a target and drops it straight away. Feed it the tap as a move, swallow the
+// leave so Clawd stays where you tapped, and show the room's cursor at the tap point.
+for (const [id, url, hx, hy] of [["space", STAR_CURSOR, 8, 8], ["pool", DROP_CURSOR, 10, 2]]) {
+  const room = $("#" + id), box = room.querySelector(".actor-box");
+  room.addEventListener("pointerleave", e => { if (e.pointerType !== "mouse" && e.target === box) e.stopImmediatePropagation(); }, true);
+  room.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" || e.target.closest("button")) return;
+    box.dispatchEvent(new PointerEvent("pointermove", { clientX: e.clientX, clientY: e.clientY, pointerType: e.pointerType }));
+    const r = room.getBoundingClientRect(), m = new Image();
+    m.src = url; m.className = "tap-mark"; m.alt = "";
+    m.style.left = `${e.clientX - r.left - room.clientLeft - hx}px`; m.style.top = `${e.clientY - r.top - room.clientTop - hy}px`;
+    m.onanimationend = () => m.remove();
+    room.appendChild(m);
+  });
+}
+// and the hints say tap instead of click
+if (matchMedia("(hover: none)").matches) document.querySelectorAll(".room .hint").forEach(h => {
+  h.textContent = h.textContent.replace("Move around and Clawd floats after you. Click for shooting stars.", "Tap anywhere: Clawd floats over, a shooting star goes by.").replace(/\bClick\b/g, "Tap").replace(/\bclick\b/g, "tap");
+});
 // after a lap, clicking the road sends him round again
 $("#road").addEventListener("click", e => { if (!e.target.closest("button")) road?.again(); });
 

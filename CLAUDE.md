@@ -45,6 +45,7 @@ Before adding anything, check it isn't a copy: several sources draw the same ani
 - **Seen markers**: every piece carries all four markers (`.mk-dot`, `.mk-stamp`, `.mk-paw`, `.mk-star`); `html[data-marker]` picks the visible one. Seen ids are stored in `sessionStorage["clawd-seen"]`, so they last for one tab: a reload keeps them, a new tab starts with everything unseen.
 - **Top bar**: `html[data-theme]` = red | white | navy | green, `html[data-texture]` = plain | clawd | stripes | dots | linen. Both are set in an inline `<head>` script before first paint. Texture images are data-URI SVGs in the CSS; dark walls use a white tone, the white gallery a black tone.
 - **Playground**: `openRoom(name, { quiet })` stops the old room's scenes and starts the new one with claude.dev's code (`clawdScenes()`), except the Sky room, which uses the page's own `kiteActor()` so the kite can drift to clicks. Pass `quiet: true` when opening a room the visitor didn't ask for, so it isn't marked seen.
+- **Touch**: phones have no cursor and a tap sends no `pointermove`, then a `pointerleave` that makes `clawdActor` drop its target. The block after the room cursors turns a tap into a move, swallows that leave, shows the room's pixel cursor at the tap point (`.tap-mark`) and says "tap" in the hints.
 - **"Back to …"** button: `jumpFrom(piece, target)`; shown bottom-right when the piece is below, top-centre when it's above.
 
 Remembered across tabs in localStorage: `clawd-wall`, `clawd-texture`, `clawd-marker`. Per tab in sessionStorage: `clawd-seen`.
