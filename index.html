@@ -134,6 +134,11 @@
   /* when the piece is above you (coming back from the playground), sit centred under the top bar and point up */
   #backTo.up { top: 78px; bottom: auto; right: auto; left: 50%; transform: translate(-50%, -16px); }
   #backTo.up.show { transform: translate(-50%, 0); }
+  /* on a phone the bottom one sits centred too: nothing there to cover */
+  @media (max-width: 720px) {
+    #backTo:not(.up) { right: auto; left: 50%; transform: translate(-50%, 16px); }
+    #backTo:not(.up).show { transform: translate(-50%, 0); }
+  }
   #backTo.up .arw { border-top: 0; border-bottom: 7px solid currentColor; }
   #backTo:hover { filter: brightness(1.06); }
   #backTo .arw { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid currentColor; }
