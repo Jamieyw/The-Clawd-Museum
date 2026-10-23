@@ -15,6 +15,15 @@ A small, interactive museum for Clawd.
 
 Your wall, texture and marker are remembered in your browser. The pieces you've seen are remembered only in the current tab, so a new tab starts with everything unseen.
 
+## Where Clawd comes from
+
+Every Clawd in the museum was collected from two places:
+
+- **[claude.dev](https://claude.dev/)**: the 33 animated acts, the logo's waving, looking and walking, the pixel-art astronaut, pool float, kite and rides, and the dotted scenes used in the playground.
+- **[Clawd's Quest](https://claude.dev/game/)**: the arcade game on claude.dev, source of the 8 moves that appear nowhere else (crab walking, disappointed, dizzy, facepalm, hula, glancing around, pointing and running).
+
+Both sites get updated from time to time. When they add new Clawd animations, those can be collected and hung in the museum too.
+
 ## Run it locally
 
 It's a static site with no build step, but it has to be served over HTTP (the animations are loaded with `fetch`, which browsers block on `file://`):
@@ -34,8 +43,3 @@ The repo includes a `render.yaml` blueprint for a Render **Static Site**:
 3. Every push to the default branch redeploys.
 
 (Or create a **Static Site** by hand with an empty build command and `.` as the publish directory.)
-
-## Credits
-
-This is an unofficial fan project and isn't affiliated with or endorsed by Anthropic.
-Clawd, every animation, sprite and icon in `assets/`, and the scene code in `assets/site/` belong to Anthropic and were collected from [claude.dev](https://claude.dev) and [Clawd's Quest](https://claude.dev/game/). The museum page itself (`index.html`, `assets/site/loader.js`) was written for this project.

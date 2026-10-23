@@ -23,6 +23,18 @@ assets/site/space.js       claude.dev chunk: modules 98092 (spaceField) and 3914
 assets/favicon.svg, clawd-mark.png
 ```
 
+## Where the Clawds come from
+
+All artwork was collected from **https://claude.dev/** and **https://claude.dev/game/** (Clawd's Quest). Both sites change over time, so new Clawd animations may appear; when asked to "check for new Clawds", look in these places and compare against what's already in `assets/`:
+
+- **Lottie acts**: claude.dev's JS chunks (the `<script src="/_next/static/chunks/…">` files, plus chunks they reference) list `Clawd-*.json` names served from `https://claude.dev/shared/video/acts/`. Logo animations live at `/shared/video/clawd-*.json`.
+- **Pixel sprites in the site code**: a chunk exporting `CLAWD`, `CLAWD_KITE`, `CLAWD_POOL`, `RIDE_SPRITES` holds them as `{w, h, fps, palette, base, deltas}` objects; extract the literals into `assets/sprites.json`.
+- **Clawd's Quest**: `https://claude.dev/game/game.js` has a `Ja={Name:{cat,w,h,fps,palette,base,deltas,a0,standMatch},…}` object with the game's sprites; new ones go in `assets/quest-sprites.json`.
+
+Sprite frames decode as: `base` is one character per pixel (`.` = transparent, otherwise a base-36 palette index), and each entry in `deltas` is a comma list of `<pixel index in base 36><new value>` changes from the previous frame.
+
+Before adding anything, check it isn't a copy: several sources draw the same animation (most Clawd's Quest sprites are pixel-identical to the site's acts, and claude.dev's `Clawd-Dancing.json` and `Clawd-DancingHappy.json` are the same dance). Render both frame by frame and compare pixels; only keep pieces that actually differ. Then add the new piece to the right catalogue array, give it a plaque line and ask-box words, and place its id in a `GROUPS` entry.
+
 ## How index.html is organised
 
 - **Catalogue arrays** near the top of the script: `ACTS`, `MOVES`, `QUEST` (`[file, title, what Clawd is doing, plaque line, ask-box words]`) and `SPRITES` (`[key, title, plaque line, room]`). `GROUPS` decides which pieces hang in which wall group, in order; `TOTAL` is derived from it. Ids are `act:X`, `move:X`, `quest:X`, `sprite:X`.
